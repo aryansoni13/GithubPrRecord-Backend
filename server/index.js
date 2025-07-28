@@ -39,7 +39,7 @@ app.get('/api/health', (req, res) => {
 });
 
 // Schedule periodic sync every 2 minutes
-cron.schedule('*/30 * * * *', async () => {
+cron.schedule('*/2 * * * *', async () => {
   console.log('Running scheduled PR sync...');
   try {
     await syncPullRequests();
