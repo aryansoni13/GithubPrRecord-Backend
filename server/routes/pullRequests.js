@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import PullRequest from '../models/PullRequest.js';
+import { syncPullRequests } from '../services/githubService.js';
 
 const router = express.Router();
 
@@ -110,6 +111,25 @@ router.get('/stats/summary', async (req, res) => {
   } catch (error) {
     console.error('Error fetching PR stats:', error);
     res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Manual sync endpoint
+router.post('/sync', async (req, res) => {
+  try {
+    console.log('Manual sync triggered...');
+    const count = await syncPullRequests();
+    res.json({ 
+      success: true, 
+      message: `Sync completed. Processed ${count} PRs.`,
+      processedCount: count 
+    });
+  } catch (error) {
+    console.error('Manual sync failed:', error);
+    res.status(500).json({ 
+      error: 'Sync failed', 
+      message: error.message 
+    });
   }
 });
 
